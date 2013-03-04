@@ -11,10 +11,7 @@ main() {
   HttpServer.bind('0.0.0.0', port).then((HttpServer server){
     print('Server started on port: ${port}');
     server.listen((HttpRequest request) {
-      var resp = JSON.stringify({
-        'Dart on Heroku': true,
-        'Environment': Platform.environment}
-      );
+      var resp = 'oi you!';
       request.response..headers.set(HttpHeaders.CONTENT_TYPE, 'application/json')
                       ..addString(resp)
                       ..close();
