@@ -13,10 +13,22 @@ main() {
   HttpServer.bind('0.0.0.0', port).then((HttpServer server){
     print('Server started on port: ${port}');
     server.listen((HttpRequest request) {
-      var resp = 'oi you!';
-      request.response..headers.set(HttpHeaders.CONTENT_TYPE, 'application/json')
-                      ..addString(resp)
-                      ..close();
+      
+      reply(msg) {
+        request.response
+          ..headers.set(HttpHeaders.CONTENT_TYPE, 'text/plain')
+          ..addString(msg)
+          ..close();  
+      }
+      
+      connect('testdb', 'testdb', 'password', host: 'localhost', port: 5432)
+        .then((conn) {
+          reply('Connected.');
+        })
+        .catchError((error) {
+          reply('Boom! $error');
+        });
+      
     });
   });
 }
