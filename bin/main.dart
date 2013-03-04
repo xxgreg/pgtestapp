@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:json' as JSON;
 
+import 'package:postgresql/postgresql.dart';
+
 main() {
   int defaultPort = 8080;
   var portStr = Platform.environment['PORT'];

@@ -1,1 +1,6 @@
 name: dart_on_heroku_using_postgresql_demo
+dependencies:
+  postgresql:
+    git:
+      url: git://github.com/xxgreg/postgresql.git
+      ref: ssl
