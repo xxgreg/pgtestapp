@@ -2,21 +2,22 @@ import 'dart:io';
 import 'dart:json' as JSON;
 
 main() {
-  var server = new HttpServer();
-  var port = int.parse(Platform.environment['PORT']);
-  server.listen('0.0.0.0', port);
-  print('Server started on port: ${port}');
-
-  server.defaultRequestHandler = (HttpRequest request, HttpResponse response) {
-
-    var resp = JSON.stringify({
-      'Dart on Heroku': true,
-      'Buildpack URL': 'https://github.com/igrigorik/heroku-buildpack-dart',
-      'Environment': Platform.environment}
-    );
-
-    response.headers.set(HttpHeaders.CONTENT_TYPE, 'application/json');
-    response.outputStream.writeString(resp);
-    response.outputStream.close();
-  };
+  int defaultPort = 8080;
+  var portStr = Platform.environment['PORT'];
+  if (portStr == null)
+    portStr = "";
+  var port = int.parse(portStr, onError: (_) => defaultPort);
+  
+  HttpServer.bind('0.0.0.0', port).then((HttpServer server){
+    print('Server started on port: ${port}');
+    server.listen((HttpRequest request) {
+      var resp = JSON.stringify({
+        'Dart on Heroku': true,
+        'Environment': Platform.environment}
+      );
+      request.response..headers.set(HttpHeaders.CONTENT_TYPE, 'application/json')
+                      ..addString(resp)
+                      ..close();
+    });
+  });
 }
