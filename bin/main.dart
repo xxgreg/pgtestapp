@@ -1,7 +1,33 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:json' as JSON;
 
 import 'package:postgresql/postgresql.dart';
+
+Future<Connection> pgconnect() {
+  
+  var username = 'testdb';
+  var database = 'testdb';
+  var password = 'password';
+  var host = 'localhost';
+  int port = 5432;
+  
+  var url = Platform.environment['DATABASE_URL'];
+      
+  var re = new RegExp(r'^postgres://([a-zA-Z0-9\-\_]+)\:([a-zA-Z0-9\-\_]+)\@([a-zA-Z0-9\-\_\.]+)\:([0-9]+)\/([a-zA-Z0-9\-\_]+)');
+  var match = re.firstMatch(url);
+  
+  var map = {};
+  if (match != null && match.groupCount == 5) {    
+    username = match[1];
+    database = match[2];
+    password = match[3];
+    host = match[4];
+    port = int.parse(match[5]);
+  }
+  
+  return connect(username, database, password, host: host, port: port);
+}
 
 main() {
   int defaultPort = 8080;
