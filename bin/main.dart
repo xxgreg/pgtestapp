@@ -13,6 +13,8 @@ Future<Connection> pgconnect() {
   int port = 5432;
   
   var url = Platform.environment['DATABASE_URL'];
+
+  print(url);
       
   var re = new RegExp(r'^postgres://([a-zA-Z0-9\-\_]+)\:([a-zA-Z0-9\-\_]+)\@([a-zA-Z0-9\-\_\.]+)\:([0-9]+)\/([a-zA-Z0-9\-\_]+)');
   var match = re.firstMatch(url);
