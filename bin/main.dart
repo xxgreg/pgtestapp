@@ -26,7 +26,6 @@ Future<Connection> pgconnect() {
     }
   }
   
-  print(url);
   print('Postgresql connect username: $username, database: $database, host: $host, port: $port');
 
   return connect(username, database, password, host: host, port: port);
