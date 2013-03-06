@@ -14,18 +14,16 @@ Future<Connection> pgconnect() {
   
   var url = Platform.environment['DATABASE_URL'];
 
-  print(url);
-      
-  var re = new RegExp(r'^postgres://([a-zA-Z0-9\-\_]+)\:([a-zA-Z0-9\-\_]+)\@([a-zA-Z0-9\-\_\.]+)\:([0-9]+)\/([a-zA-Z0-9\-\_]+)');
-  var match = re.firstMatch(url);
-  
-  var map = {};
-  if (match != null && match.groupCount == 5) {    
-    username = match[1];
-    database = match[2];
-    password = match[3];
-    host = match[4];
-    port = int.parse(match[5]);
+  if (url != null) {    
+    var re = new RegExp(r'^postgres://([a-zA-Z0-9\-\_]+)\:([a-zA-Z0-9\-\_]+)\@([a-zA-Z0-9\-\_\.]+)\:([0-9]+)\/([a-zA-Z0-9\-\_]+)');
+    var match = re.firstMatch(url);
+    if (match != null && match.groupCount == 5) {    
+      username = match[1];
+      password = match[2];
+      host = match[3];
+      port = int.parse(match[4], onError: (_) => port);
+      database = match[5];
+    }
   }
   
   return connect(username, database, password, host: host, port: port);
@@ -49,7 +47,7 @@ main() {
           ..close();  
       }
       
-      connect('testdb', 'testdb', 'password', host: 'localhost', port: 5432)
+      pgconnect()
         .then((conn) {
           return conn.query("select 'oi you!'").toList();
         })
