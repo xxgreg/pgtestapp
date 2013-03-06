@@ -51,9 +51,13 @@ main() {
       
       pgconnect()
         .then((conn) {
-          return conn.query("select 'oi you!'").toList();
+          var result = conn.query("select 'oi you!'").toList();
+          return result;
         })
-        .then((result) => reply('Connected: $result'))
+        .then((result) {
+          reply('Connected: $result');
+          //conn.close(); Throws an error somewhere. Then HttpServer fails with - headers are not mutable.
+        })
         .catchError((error) {
           reply('Boom! $error');
         });
