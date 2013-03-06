@@ -49,8 +49,9 @@ main() {
       
       connect('testdb', 'testdb', 'password', host: 'localhost', port: 5432)
         .then((conn) {
-          reply('Connected.');
+          return conn.query("select 'oi you!'").toList();
         })
+        .then((result) => reply('Connected: $result'))
         .catchError((error) {
           reply('Boom! $error');
         });
