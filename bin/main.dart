@@ -40,28 +40,29 @@ main() {
   
   HttpServer.bind('0.0.0.0', port).then((HttpServer server){
     print('Server started on port: ${port}');
-    server.listen((HttpRequest request) {
-      
-      reply(msg) {
-        request.response
-          ..headers.set(HttpHeaders.CONTENT_TYPE, 'text/plain')
-          ..addString(msg)
-          ..close();  
-      }
-      
-      pgconnect()
-        .then((conn) {
-          var result = conn.query("select 'oi you!'").toList();
-          return result;
-        })
-        .then((result) {
-          reply('Connected: $result');
-          //conn.close(); Throws an error somewhere. Then HttpServer fails with - headers are not mutable.
-        })
-        .catchError((error) {
-          reply('Boom! $error');
-        });
-      
-    });
+    server.listen(
+        handleRequest,
+        onError: (e) => print('HttpError: $e',
+        onDone: () => print('done')));
   });
+}
+
+void handleRequest(HttpRequest request) {
+    pgconnect().then((conn) {
+      conn.query("select 'oi you!'").toList().then((result) {
+        reply(request, 'Connected: $result');
+        conn.close();
+      });
+    }).catchError((error) {
+      var msg = 'Boom! $error';
+      print(msg);
+      reply(request, msg);
+    });
+}
+
+void reply(HttpRequest request, msg) {
+  request.response
+    //..headers.set(HttpHeaders.CONTENT_TYPE, 'text/plain')
+    ..addString(msg)
+    ..close();
 }
