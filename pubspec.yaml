@@ -3,4 +3,4 @@ dependencies:
   postgresql:
     git:
       url: git://github.com/xxgreg/postgresql.git
-      ref: ssl
+      ref: ssl2
