@@ -5,19 +5,19 @@ import 'dart:json' as JSON;
 import 'package:postgresql/postgresql.dart';
 
 Future<Connection> pgconnect() {
-  
+
   var username = 'testdb';
   var database = 'testdb';
   var password = 'password';
   var host = 'localhost';
   int port = 5432;
-  
+
   var url = Platform.environment['DATABASE_URL'];
 
-  if (url != null) {    
+  if (url != null) {
     var re = new RegExp(r'^postgres://([a-zA-Z0-9\-\_]+)\:([a-zA-Z0-9\-\_]+)\@([a-zA-Z0-9\-\_\.]+)\:([0-9]+)\/([a-zA-Z0-9\-\_]+)');
     var match = re.firstMatch(url);
-    if (match != null && match.groupCount == 5) {    
+    if (match != null && match.groupCount == 5) {
       username = match[1];
       password = match[2];
       host = match[3];
@@ -25,7 +25,7 @@ Future<Connection> pgconnect() {
       database = match[5];
     }
   }
-  
+
   print('Postgresql connect username: $username, database: $database, host: $host, port: $port');
 
   return connect(username, database, password, host: host, port: port, requireSsl: true);
@@ -37,13 +37,13 @@ main() {
   if (portStr == null)
     portStr = "";
   var port = int.parse(portStr, onError: (_) => defaultPort);
-  
+
   HttpServer.bind('0.0.0.0', port).then((HttpServer server){
     print('Server started on port: ${port}');
     server.listen(
         handleRequest,
-        onError: (e) => print('HttpError: $e',
-        onDone: () => print('done')));
+        onError: (e) => print('HttpError: $e'),
+        onDone: () => print('done'));
   });
 }
 
