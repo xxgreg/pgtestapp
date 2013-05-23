@@ -6,12 +6,6 @@ import 'package:postgresql/postgresql.dart';
 
 Future<Connection> pgconnect() {
   
-  var username = 'testdb';
-  var database = 'testdb';
-  var password = 'password';
-  var host = 'localhost';
-  int port = 5432;
-  
   var url = Platform.environment['DATABASE_URL'];
 
   if (url == null)
