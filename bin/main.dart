@@ -14,21 +14,10 @@ Future<Connection> pgconnect() {
   
   var url = Platform.environment['DATABASE_URL'];
 
-  if (url != null) {    
-    var re = new RegExp(r'^postgres://([a-zA-Z0-9\-\_]+)\:([a-zA-Z0-9\-\_]+)\@([a-zA-Z0-9\-\_\.]+)\:([0-9]+)\/([a-zA-Z0-9\-\_]+)');
-    var match = re.firstMatch(url);
-    if (match != null && match.groupCount == 5) {    
-      username = match[1];
-      password = match[2];
-      host = match[3];
-      port = int.parse(match[4], onError: (_) => port);
-      database = match[5];
-    }
-  }
-  
-  print('Postgresql connect username: $username, database: $database, host: $host, port: $port');
+  if (url == null)
+    url = 'postgres://testdb:password@localhost:5432/testdb';
 
-  return connect(username, database, password, host: host, port: port, requireSsl: true);
+  return connect(url);
 }
 
 main() {
@@ -40,10 +29,9 @@ main() {
   
   HttpServer.bind('0.0.0.0', port).then((HttpServer server){
     print('Server started on port: ${port}');
-    server.listen(
-        handleRequest,
-        onError: (e) => print('HttpError: $e',
-        onDone: () => print('done')));
+    server.listen(handleRequest)
+      ..onError((e) => print('HttpError: $e'))
+      ..onDone(() => print('done.'));
   });
 }
 
@@ -63,6 +51,6 @@ void handleRequest(HttpRequest request) {
 void reply(HttpRequest request, msg) {
   request.response
     //..headers.set(HttpHeaders.CONTENT_TYPE, 'text/plain')
-    ..addString(msg)
+    ..writeln(msg)
     ..close();
 }
